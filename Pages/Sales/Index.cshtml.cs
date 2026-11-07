@@ -38,6 +38,7 @@ public class IndexModel : PageModel
             Sales = await _context.Sales
                 .AsNoTracking()
                 .Include(sale => sale.Items)
+                .Include(sale => sale.Customer)
                 .OrderByDescending(sale => sale.SaleDate)
                 .Take(100)
                 .ToListAsync();
@@ -48,7 +49,8 @@ public class IndexModel : PageModel
                 exception,
                 "Unable to load sales history.");
 
-            LoadError = "Sales history could not be loaded. Check the database connection.";
+            LoadError =
+                "Sales history could not be loaded. Check the database connection.";
         }
     }
 }

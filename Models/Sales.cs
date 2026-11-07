@@ -10,15 +10,16 @@ public class Sale
     [StringLength(40)]
     public string InvoiceNumber { get; set; } = string.Empty;
 
+    public ulong? CustomerId { get; set; }
+
+    public Customer? Customer { get; set; }
+
     public DateTime SaleDate { get; set; }
 
-    [Range(typeof(decimal), "0", "9999999999.99")]
     public decimal Subtotal { get; set; }
 
-    [Range(typeof(decimal), "0", "9999999999.99")]
     public decimal DiscountAmount { get; set; }
 
-    [Range(typeof(decimal), "0", "9999999999.99")]
     public decimal TotalAmount { get; set; }
 
     [Required]
@@ -31,6 +32,5 @@ public class Sale
 
     public DateTime CreatedAt { get; set; }
 
-    public ICollection<SaleItem> Items { get; set; }
-        = new List<SaleItem>();
+    public ICollection<SaleItem> Items { get; set; } = new List<SaleItem>();
 }

@@ -1,0 +1,165 @@
+@page
+@model TradeTrack.Pages.Expenses.CreateModel
+
+@{
+    ViewData["Title"] = "Add Expense";
+    ViewData["TradeTrackDashboard"] = true;
+}
+
+<div class="app-shell">
+
+    <partial name="_Sidebar" />
+
+    <main class="main-panel">
+
+        <header class="topbar">
+            <div class="breadcrumb">
+                <a asp-page="/Expenses/Index">Expenses</a>
+                <span>/</span>
+                <strong>Add Expense</strong>
+            </div>
+
+            <div class="topbar-right">
+                <a class="dashboard-secondary-button"
+                   asp-page="/Expenses/Index">
+                    Back to Expenses
+                </a>
+                <span class="profile-avatar">MB</span>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <section class="expense-create">
+
+                <header class="expense-page-heading">
+                    <p class="eyebrow">EXPENSE MANAGEMENT</p>
+                    <h1>Add Expense</h1>
+                    <p class="page-description">
+                        Record and categorise a business expense.
+                    </p>
+                </header>
+
+                <form method="post" class="expense-form">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="expense-validation">
+                    </div>
+
+                    <div class="expense-form-grid">
+
+                        <div class="expense-field">
+                            <label asp-for="Expense.Title">Expense Title</label>
+                            <input asp-for="Expense.Title"
+                                   class="expense-control"
+                                   placeholder="e.g. Shop electricity bill" />
+                            <span asp-validation-for="Expense.Title"
+                                  class="expense-error"></span>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Expense.Category">Category</label>
+                            <select asp-for="Expense.Category"
+                                    class="expense-control">
+                                <option value="Rent">Rent</option>
+                                <option value="Utilities">Utilities</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Salaries">Salaries</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Internet">Internet</option>
+                                <option value="Maintenance">Maintenance</option>
+                                <option value="Packaging">Packaging</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Expense.Category"
+                                  class="expense-error"></span>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Expense.Amount">Amount (₦)</label>
+                            <input asp-for="Expense.Amount"
+                                   type="number"
+                                   min="0.01"
+                                   step="0.01"
+                                   class="expense-control"
+                                   placeholder="0.00" />
+                            <span asp-validation-for="Expense.Amount"
+                                  class="expense-error"></span>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Expense.PaymentMethod">
+                                Payment Method
+                            </label>
+                            <select asp-for="Expense.PaymentMethod"
+                                    class="expense-control">
+                                <option value="Cash">Cash</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="POS">POS</option>
+                                <option value="Card">Card</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Expense.PaymentMethod"
+                                  class="expense-error"></span>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Expense.ExpenseDate">Expense Date</label>
+                            <input asp-for="Expense.ExpenseDate"
+                                   type="datetime-local"
+                                   class="expense-control" />
+                            <span asp-validation-for="Expense.ExpenseDate"
+                                  class="expense-error"></span>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Expense.ReferenceNumber">
+                                Reference Number
+                            </label>
+                            <input asp-for="Expense.ReferenceNumber"
+                                   class="expense-control"
+                                   placeholder="Optional receipt or payment reference" />
+                        </div>
+
+                        <div class="expense-field expense-full-width">
+                            <label asp-for="Expense.Description">Description</label>
+                            <textarea asp-for="Expense.Description"
+                                      class="expense-control"
+                                      rows="3"
+                                      placeholder="Describe what the business spent money on"></textarea>
+                        </div>
+
+                        <div class="expense-field expense-full-width">
+                            <label asp-for="Expense.Notes">Additional Notes</label>
+                            <textarea asp-for="Expense.Notes"
+                                      class="expense-control"
+                                      rows="3"
+                                      placeholder="Optional notes"></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="expense-actions">
+                        <button type="submit" class="expense-save-button">
+                            Save Expense
+                        </button>
+
+                        <a asp-page="/Expenses/Index"
+                           class="product-create__cancel">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

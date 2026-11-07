@@ -12,192 +12,202 @@ public class TradeTrackDbContext : DbContext
     }
 
     public DbSet<Product> Products => Set<Product>();
-
     public DbSet<Sale> Sales => Set<Sale>();
-
     public DbSet<SaleItem> SaleItems => Set<SaleItem>();
+    public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<Customer> Customers => Set<Customer>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Products table
+        // Products
 
         modelBuilder.Entity<Product>(entity =>
         {
             entity.ToTable("products");
+            entity.HasKey(p => p.ProductId);
 
-            entity.HasKey(product => product.ProductId);
-
-            entity.Property(product => product.ProductId)
+            entity.Property(p => p.ProductId)
                 .HasColumnName("product_id")
                 .HasColumnType("bigint unsigned")
                 .ValueGeneratedOnAdd();
 
-            entity.Property(product => product.Sku)
-                .HasColumnName("sku")
-                .HasMaxLength(40)
-                .IsRequired();
+            entity.Property(p => p.Sku).HasColumnName("sku").HasMaxLength(40).IsRequired();
+            entity.HasIndex(p => p.Sku).IsUnique();
 
-            entity.HasIndex(product => product.Sku)
-                .IsUnique();
+            entity.Property(p => p.Name).HasColumnName("name").HasMaxLength(150).IsRequired();
+            entity.Property(p => p.Category).HasColumnName("category").HasMaxLength(80);
+            entity.Property(p => p.Unit).HasColumnName("unit").HasMaxLength(20).IsRequired();
 
-            entity.Property(product => product.Name)
-                .HasColumnName("name")
-                .HasMaxLength(150)
-                .IsRequired();
+            entity.Property(p => p.CostPrice).HasColumnName("cost_price").HasPrecision(12, 2);
+            entity.Property(p => p.SellingPrice).HasColumnName("selling_price").HasPrecision(12, 2);
+            entity.Property(p => p.QuantityInStock).HasColumnName("quantity_in_stock").HasPrecision(12, 3);
+            entity.Property(p => p.LowStockThreshold).HasColumnName("low_stock_threshold").HasPrecision(12, 3);
 
-            entity.Property(product => product.Category)
-                .HasColumnName("category")
-                .HasMaxLength(80);
+            entity.Property(p => p.IsActive).HasColumnName("is_active");
 
-            entity.Property(product => product.Unit)
-                .HasColumnName("unit")
-                .HasMaxLength(20)
-                .IsRequired();
-
-            entity.Property(product => product.CostPrice)
-                .HasColumnName("cost_price")
-                .HasPrecision(12, 2);
-
-            entity.Property(product => product.SellingPrice)
-                .HasColumnName("selling_price")
-                .HasPrecision(12, 2);
-
-            entity.Property(product => product.QuantityInStock)
-                .HasColumnName("quantity_in_stock")
-                .HasPrecision(12, 3);
-
-            entity.Property(product => product.LowStockThreshold)
-                .HasColumnName("low_stock_threshold")
-                .HasPrecision(12, 3);
-
-            entity.Property(product => product.IsActive)
-                .HasColumnName("is_active");
-
-            entity.Property(product => product.CreatedAt)
+            entity.Property(p => p.CreatedAt)
                 .HasColumnName("created_at")
                 .HasColumnType("timestamp")
                 .ValueGeneratedOnAdd();
 
-            entity.Property(product => product.UpdatedAt)
+            entity.Property(p => p.UpdatedAt)
                 .HasColumnName("updated_at")
                 .HasColumnType("timestamp")
                 .ValueGeneratedOnAddOrUpdate();
         });
 
-
-        // Sales table
+        // Sales
 
         modelBuilder.Entity<Sale>(entity =>
         {
             entity.ToTable("sales");
+            entity.HasKey(s => s.SaleId);
 
-            entity.HasKey(sale => sale.SaleId);
-
-            entity.Property(sale => sale.SaleId)
+            entity.Property(s => s.SaleId)
                 .HasColumnName("sale_id")
                 .HasColumnType("bigint unsigned")
                 .ValueGeneratedOnAdd();
 
-            entity.Property(sale => sale.InvoiceNumber)
+            entity.Property(s => s.InvoiceNumber)
                 .HasColumnName("invoice_number")
                 .HasMaxLength(40)
                 .IsRequired();
 
-            entity.HasIndex(sale => sale.InvoiceNumber)
-                .IsUnique();
+            entity.HasIndex(s => s.InvoiceNumber).IsUnique();
 
-            entity.Property(sale => sale.SaleDate)
+            entity.Property(s => s.CustomerId)
+                .HasColumnName("customer_id")
+                .HasColumnType("bigint unsigned");
+
+            entity.Property(s => s.SaleDate)
                 .HasColumnName("sale_date")
                 .HasColumnType("datetime")
                 .ValueGeneratedOnAdd();
 
-            entity.Property(sale => sale.Subtotal)
-                .HasColumnName("subtotal")
-                .HasPrecision(12, 2);
+            entity.Property(s => s.Subtotal).HasColumnName("subtotal").HasPrecision(12, 2);
+            entity.Property(s => s.DiscountAmount).HasColumnName("discount_amount").HasPrecision(12, 2);
+            entity.Property(s => s.TotalAmount).HasColumnName("total_amount").HasPrecision(12, 2);
 
-            entity.Property(sale => sale.DiscountAmount)
-                .HasColumnName("discount_amount")
-                .HasPrecision(12, 2);
-
-            entity.Property(sale => sale.TotalAmount)
-                .HasColumnName("total_amount")
-                .HasPrecision(12, 2);
-
-            entity.Property(sale => sale.PaymentMethod)
+            entity.Property(s => s.PaymentMethod)
                 .HasColumnName("payment_method")
                 .HasMaxLength(30)
                 .IsRequired();
 
-            entity.Property(sale => sale.Status)
+            entity.Property(s => s.Status)
                 .HasColumnName("status")
                 .HasMaxLength(20)
                 .HasDefaultValue("Completed");
 
-            entity.Property(sale => sale.CreatedAt)
+            entity.Property(s => s.CreatedAt)
+                .HasColumnName("created_at")
+                .HasColumnType("timestamp")
+                .ValueGeneratedOnAdd();
+
+            entity.HasOne(s => s.Customer)
+                .WithMany(c => c.Sales)
+                .HasForeignKey(s => s.CustomerId)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
+        // Sale items
+
+        modelBuilder.Entity<SaleItem>(entity =>
+        {
+            entity.ToTable("sale_items");
+            entity.HasKey(i => i.SaleItemId);
+
+            entity.Property(i => i.SaleItemId)
+                .HasColumnName("sale_item_id")
+                .HasColumnType("bigint unsigned")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(i => i.SaleId).HasColumnName("sale_id").HasColumnType("bigint unsigned");
+            entity.Property(i => i.ProductId).HasColumnName("product_id").HasColumnType("bigint unsigned");
+
+            entity.Property(i => i.ProductName).HasColumnName("product_name").HasMaxLength(150).IsRequired();
+            entity.Property(i => i.Sku).HasColumnName("sku").HasMaxLength(40).IsRequired();
+
+            entity.Property(i => i.Quantity).HasColumnName("quantity").HasPrecision(12, 3);
+            entity.Property(i => i.UnitPrice).HasColumnName("unit_price").HasPrecision(12, 2);
+            entity.Property(i => i.UnitCost).HasColumnName("unit_cost").HasPrecision(12, 2);
+            entity.Property(i => i.LineTotal).HasColumnName("line_total").HasPrecision(12, 2);
+
+            entity.HasOne(i => i.Sale)
+                .WithMany(s => s.Items)
+                .HasForeignKey(i => i.SaleId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(i => i.Product)
+                .WithMany()
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // Expenses
+
+        modelBuilder.Entity<Expense>(entity =>
+        {
+            entity.ToTable("expenses");
+            entity.HasKey(e => e.ExpenseId);
+
+            entity.Property(e => e.ExpenseId)
+                .HasColumnName("expense_id")
+                .HasColumnType("bigint unsigned")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(e => e.Title).HasColumnName("title").HasMaxLength(150).IsRequired();
+            entity.Property(e => e.Category).HasColumnName("category").HasMaxLength(80).IsRequired();
+            entity.Property(e => e.Description).HasColumnName("description").HasMaxLength(500);
+            entity.Property(e => e.Amount).HasColumnName("amount").HasPrecision(12, 2);
+            entity.Property(e => e.PaymentMethod).HasColumnName("payment_method").HasMaxLength(30).IsRequired();
+
+            entity.Property(e => e.ExpenseDate)
+                .HasColumnName("expense_date")
+                .HasColumnType("datetime");
+
+            entity.Property(e => e.ReferenceNumber).HasColumnName("reference_number").HasMaxLength(60);
+            entity.Property(e => e.Notes).HasColumnName("notes").HasMaxLength(500);
+
+            entity.Property(e => e.CreatedAt)
                 .HasColumnName("created_at")
                 .HasColumnType("timestamp")
                 .ValueGeneratedOnAdd();
         });
 
+        // Customers
 
-        // Sale items table
-
-        modelBuilder.Entity<SaleItem>(entity =>
+        modelBuilder.Entity<Customer>(entity =>
         {
-            entity.ToTable("sale_items");
+            entity.ToTable("customers");
+            entity.HasKey(c => c.CustomerId);
 
-            entity.HasKey(item => item.SaleItemId);
-
-            entity.Property(item => item.SaleItemId)
-                .HasColumnName("sale_item_id")
+            entity.Property(c => c.CustomerId)
+                .HasColumnName("customer_id")
                 .HasColumnType("bigint unsigned")
                 .ValueGeneratedOnAdd();
 
-            entity.Property(item => item.SaleId)
-                .HasColumnName("sale_id")
-                .HasColumnType("bigint unsigned");
+            entity.Property(c => c.FullName).HasColumnName("full_name").HasMaxLength(150).IsRequired();
+            entity.Property(c => c.Phone).HasColumnName("phone").HasMaxLength(30);
+            entity.Property(c => c.Email).HasColumnName("email").HasMaxLength(150);
+            entity.Property(c => c.Address).HasColumnName("address").HasMaxLength(300);
+            entity.Property(c => c.Notes).HasColumnName("notes").HasMaxLength(500);
+            entity.Property(c => c.IsActive).HasColumnName("is_active");
 
-            entity.Property(item => item.ProductId)
-                .HasColumnName("product_id")
-                .HasColumnType("bigint unsigned");
+            entity.Property(c => c.CreatedAt)
+                .HasColumnName("created_at")
+                .HasColumnType("timestamp")
+                .ValueGeneratedOnAdd();
 
-            entity.Property(item => item.ProductName)
-                .HasColumnName("product_name")
-                .HasMaxLength(150)
-                .IsRequired();
+            entity.Property(c => c.UpdatedAt)
+                .HasColumnName("updated_at")
+                .HasColumnType("timestamp")
+                .ValueGeneratedOnAddOrUpdate();
 
-            entity.Property(item => item.Sku)
-                .HasColumnName("sku")
-                .HasMaxLength(40)
-                .IsRequired();
-
-            entity.Property(item => item.Quantity)
-                .HasColumnName("quantity")
-                .HasPrecision(12, 3);
-
-            entity.Property(item => item.UnitPrice)
-                .HasColumnName("unit_price")
-                .HasPrecision(12, 2);
-
-            entity.Property(item => item.UnitCost)
-                .HasColumnName("unit_cost")
-                .HasPrecision(12, 2);
-
-            entity.Property(item => item.LineTotal)
-                .HasColumnName("line_total")
-                .HasPrecision(12, 2);
-
-            entity.HasOne(item => item.Sale)
-                .WithMany(sale => sale.Items)
-                .HasForeignKey(item => item.SaleId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            entity.HasOne(item => item.Product)
-                .WithMany()
-                .HasForeignKey(item => item.ProductId)
-                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(c => c.FullName);
+            entity.HasIndex(c => c.Phone);
+            entity.HasIndex(c => c.Email);
         });
     }
 }

@@ -45,20 +45,43 @@
 
                 <form method="post"
                       id="saleForm"
-                      class="sales-form"
-                      data-next-index="@rowCount">
+                      class="sales-form">
 
                     <div asp-validation-summary="ModelOnly"
                          class="sales-validation">
                     </div>
 
-                    @if (Model.AvailableProducts.Count == 0)
-                    {
-                        <div class="inventory-notice inventory-error">
-                            No active products with available stock. Add stock before recording a sale.
-                            <a asp-page="/Products/Index">View Inventory</a>
+                    <section class="sales-form-section">
+
+                        <div class="sales-section-heading">
+                            <h2>Customer</h2>
+                            <span>Optional</span>
                         </div>
-                    }
+
+                        <div class="sales-field">
+                            <label asp-for="CustomerId">Select Customer</label>
+
+                            <select asp-for="CustomerId"
+                                    class="sales-control">
+                                <option value="">Walk-in / Unregistered Customer</option>
+
+                                @foreach (var customer in Model.AvailableCustomers)
+                                {
+                                    <option value="@customer.CustomerId">
+                                        @customer.FullName
+                                        @(string.IsNullOrWhiteSpace(customer.Phone)
+                                            ? ""
+                                            : $" — {customer.Phone}")
+                                    </option>
+                                }
+                            </select>
+
+                            <span asp-validation-for="CustomerId"
+                                  class="product-create__error">
+                            </span>
+                        </div>
+
+                    </section>
 
                     <section class="sales-form-section">
 
@@ -80,10 +103,9 @@
                                 <div class="sale-line" data-sale-line>
 
                                     <div class="sales-field">
-                                        <label for="saleProduct@(i)">Product</label>
+                                        <label>Product</label>
 
-                                        <select id="saleProduct@(i)"
-                                                name="Lines[@i].ProductId"
+                                        <select name="Lines[@i].ProductId"
                                                 class="sales-control"
                                                 data-product-select>
                                             <option value="0">Select a product</option>
@@ -101,13 +123,12 @@
                                     </div>
 
                                     <div class="sales-field">
-                                        <label for="saleQuantity@(i)">Quantity</label>
+                                        <label>Quantity</label>
 
-                                        <input id="saleQuantity@(i)"
-                                               name="Lines[@i].Quantity"
+                                        <input name="Lines[@i].Quantity"
                                                type="number"
-                                               min="0.001"
-                                               step="0.001"
+                                               min="1"
+                                               step="1"
                                                value="@quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)"
                                                class="sales-control"
                                                data-quantity />
@@ -157,8 +178,8 @@
 
                                     <input name="Lines[__index__].Quantity"
                                            type="number"
-                                           min="0.001"
-                                           step="0.001"
+                                           min="1"
+                                           step="1"
                                            value="1"
                                            class="sales-control"
                                            data-quantity />
@@ -182,7 +203,7 @@
                         <button type="button"
                                 id="addSaleLine"
                                 class="sales-add-line"
-                                @(Model.AvailableProducts.Count == 0 ? "disabled" : "")>
+                                disabled="@(Model.AvailableProducts.Count == 0)">
                             + Add Another Product
                         </button>
 
@@ -207,12 +228,14 @@
                                     <option value="Card">Card</option>
                                     <option value="Other">Other</option>
                                 </select>
+
+                                <span asp-validation-for="PaymentMethod"
+                                      class="product-create__error">
+                                </span>
                             </div>
 
                             <div class="sales-field">
-                                <label asp-for="DiscountAmount">
-                                    Discount (₦)
-                                </label>
+                                <label asp-for="DiscountAmount">Discount (₦)</label>
 
                                 <input asp-for="DiscountAmount"
                                        type="number"
@@ -220,6 +243,7 @@
                                        step="0.01"
                                        class="sales-control"
                                        data-discount />
+
                                 <span asp-validation-for="DiscountAmount"
                                       class="product-create__error">
                                 </span>
@@ -252,7 +276,7 @@
 
                         <button type="submit"
                                 class="product-create__button"
-                                @(Model.AvailableProducts.Count == 0 ? "disabled" : "")>
+                                disabled="@(Model.AvailableProducts.Count == 0)">
                             Complete Sale
                         </button>
 

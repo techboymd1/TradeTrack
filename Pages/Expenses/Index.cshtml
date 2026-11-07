@@ -1,0 +1,154 @@
+@page
+@model TradeTrack.Pages.Expenses.IndexModel
+
+@{
+    ViewData["Title"] = "Expenses";
+    ViewData["TradeTrackDashboard"] = true;
+}
+
+<div class="app-shell">
+
+    <partial name="_Sidebar" />
+
+    <main class="main-panel">
+
+        <header class="topbar">
+            <div class="breadcrumb">
+                <span>Workspace</span>
+                <span>/</span>
+                <strong>Expenses</strong>
+            </div>
+
+            <div class="topbar-right">
+                <a class="dashboard-primary-button"
+                   asp-page="/Expenses/Create">+ Add Expense</a>
+                <span class="profile-avatar">MB</span>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <section class="inventory-header">
+                <div>
+                    <p class="eyebrow">BUSINESS MANAGEMENT</p>
+                    <h1>Expenses</h1>
+                    <p class="page-description">
+                        Monitor and manage business spending.
+                    </p>
+                </div>
+            </section>
+
+            @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+            {
+                <div class="inventory-notice inventory-success">
+                    @Model.SuccessMessage
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.LoadError))
+            {
+                <div class="inventory-notice inventory-error">
+                    @Model.LoadError
+                </div>
+            }
+
+            <section class="inventory-summary">
+
+                <article class="inventory-summary-card">
+                    <span class="inventory-summary-label">Expenses This Month</span>
+                    <strong>₦@Model.MonthlyExpenses.ToString("N2")</strong>
+                </article>
+
+                <article class="inventory-summary-card">
+                    <span class="inventory-summary-label">Total Recorded Spending</span>
+                    <strong>₦@Model.TotalRecordedExpenses.ToString("N2")</strong>
+                </article>
+
+                <article class="inventory-summary-card">
+                    <span class="inventory-summary-label">Expense Records</span>
+                    <strong>@Model.TotalExpenseRecords.ToString("N0")</strong>
+                </article>
+
+            </section>
+
+            <section class="inventory-section">
+
+                <div class="inventory-section-heading">
+                    <div>
+                        <h2>Expense History</h2>
+                        <p>Latest recorded business expenses.</p>
+                    </div>
+                    <span class="inventory-result-count">
+                        @Model.Expenses.Count Records Shown
+                    </span>
+                </div>
+
+                <div class="inventory-table-container">
+
+                    <table class="inventory-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Expense</th>
+                                <th>Category</th>
+                                <th>Payment Method</th>
+                                <th>Reference</th>
+                                <th>Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @if (Model.Expenses.Count > 0)
+                            {
+                                @foreach (var expense in Model.Expenses)
+                                {
+                                    <tr>
+                                        <td>@expense.ExpenseDate.ToString("dd MMM yyyy")</td>
+                                        <td class="inventory-product-name">@expense.Title</td>
+                                        <td>@expense.Category</td>
+                                        <td>@expense.PaymentMethod</td>
+                                        <td>
+                                            @(string.IsNullOrWhiteSpace(expense.ReferenceNumber)
+                                                ? "—" : expense.ReferenceNumber)
+                                        </td>
+                                        <td><strong>₦@expense.Amount.ToString("N2")</strong></td>
+                                        <td>
+                                            <a class="expense-edit-link"
+                                               asp-page="/Expenses/Edit"
+                                               asp-route-id="@expense.ExpenseId">
+                                                Edit
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="inventory-empty-state">
+                                            <h3>No Expenses Recorded</h3>
+                                            <p>Saved business expenses will appear here.</p>
+                                            <a class="dashboard-primary-button"
+                                               asp-page="/Expenses/Create">
+                                                + Record First Expense
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </section>
+
+            <footer class="dashboard-footer">
+                <span>TradeTrack · Business Management System</span>
+                <span>All rights reserved.</span>
+            </footer>
+
+        </div>
+    </main>
+</div>

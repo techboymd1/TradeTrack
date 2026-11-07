@@ -22,8 +22,7 @@
 
             <div class="topbar-right">
 
-                <a class="dashboard-primary-button"
-                   asp-page="/Products/Create">
+                <a class="dashboard-primary-button" asp-page="/Products/Create">
                     <span aria-hidden="true">+</span>
                     Add Product
                 </a>
@@ -96,8 +95,8 @@
                             <span class="metric-icon sales-icon" aria-hidden="true">↗</span>
                         </div>
 
-                        <p class="metric-value">—</p>
-                        <p class="metric-footnote">Today's revenue</p>
+                        <p class="metric-value">@Model.SalesTodayDisplay</p>
+                        <p class="metric-footnote">Completed sales today</p>
                     </article>
 
 
@@ -121,8 +120,8 @@
                             <span class="metric-icon expense-icon" aria-hidden="true">↘</span>
                         </div>
 
-                        <p class="metric-value">—</p>
-                        <p class="metric-footnote">Monthly spending</p>
+                        <p class="metric-value">@Model.MonthlyExpensesDisplay</p>
+                        <p class="metric-footnote">Recorded expenses this month</p>
                     </article>
 
 
@@ -132,8 +131,8 @@
                             <span class="metric-icon profit-icon" aria-hidden="true">◎</span>
                         </div>
 
-                        <p class="metric-value">—</p>
-                        <p class="metric-footnote">Business earnings</p>
+                        <p class="metric-value">@Model.NetProfitDisplay</p>
+                        <p class="metric-footnote">Monthly earnings after recorded costs and expenses</p>
                     </article>
 
                 </div>
@@ -195,8 +194,7 @@
                             require attention.
                         </p>
 
-                        <a class="dashboard-primary-button"
-                           asp-page="/Products/Index">
+                        <a class="dashboard-primary-button" asp-page="/Products/Index">
                             View Inventory
                         </a>
 
@@ -225,8 +223,7 @@
 
                     <article class="module-card">
 
-                        <div class="module-icon inventory-module-icon"
-                             aria-hidden="true">▤</div>
+                        <div class="module-icon inventory-module-icon" aria-hidden="true">▤</div>
 
                         <div class="module-content">
                             <h3>Products & Stock</h3>
@@ -243,11 +240,9 @@
 
                     </article>
 
-
                     <article class="module-card">
 
-                        <div class="module-icon sales-module-icon"
-                             aria-hidden="true">↗</div>
+                        <div class="module-icon sales-module-icon" aria-hidden="true">↗</div>
 
                         <div class="module-content">
                             <h3>Customers & Sales</h3>
@@ -258,13 +253,24 @@
                             </p>
                         </div>
 
+                        <div class="module-links">
+
+                            <a class="module-link" asp-page="/Customers/Index">
+                                Manage Customers →
+                            </a>
+
+                            <a class="module-link" asp-page="/Sales/Index">
+                                View Sales →
+                            </a>
+
+                        </div>
+
                     </article>
 
 
                     <article class="module-card">
 
-                        <div class="module-icon expenses-module-icon"
-                             aria-hidden="true">₦</div>
+                        <div class="module-icon expenses-module-icon" aria-hidden="true">₦</div>
 
                         <div class="module-content">
                             <h3>Expenses & Reports</h3>
@@ -275,8 +281,19 @@
                             </p>
                         </div>
 
-                    </article>
+                        <div class="module-links">
 
+                            <a class="module-link" asp-page="/Expenses/Index">
+                                View Expenses →
+                            </a>
+
+                            <a class="module-link" asp-page="/Reports/Index">
+                                View Reports →
+                            </a>
+
+                        </div>
+
+                    </article>
                 </div>
 
             </section>

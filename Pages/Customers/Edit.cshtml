@@ -1,0 +1,115 @@
+@page
+@model TradeTrack.Pages.Customers.EditModel
+
+@{
+    ViewData["Title"] = "Edit Customer";
+    ViewData["TradeTrackDashboard"] = true;
+}
+
+<div class="app-shell">
+
+    <partial name="_Sidebar" />
+
+    <main class="main-panel">
+
+        <header class="topbar">
+            <div class="breadcrumb">
+                <a asp-page="/Customers/Index">Customers</a>
+                <span>/</span>
+                <strong>Edit Customer</strong>
+            </div>
+
+            <div class="topbar-right">
+                <a class="dashboard-secondary-button"
+                   asp-page="/Customers/Index">Back to Customers</a>
+                <span class="profile-avatar">MB</span>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <section class="expense-create">
+
+                <header class="expense-page-heading">
+                    <p class="eyebrow">CUSTOMER MANAGEMENT</p>
+                    <h1>Edit Customer</h1>
+                    <p class="page-description">
+                        Update customer information.
+                    </p>
+                </header>
+
+                <form method="post"
+                      asp-route-id="@Model.Customer.CustomerId"
+                      class="expense-form">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="expense-validation"></div>
+
+                    <div class="expense-form-grid">
+
+                        <div class="expense-field expense-full-width">
+                            <label asp-for="Customer.FullName">Full Name</label>
+                            <input asp-for="Customer.FullName"
+                                   class="expense-control" />
+                            <span asp-validation-for="Customer.FullName"
+                                  class="expense-error"></span>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Customer.Phone">Phone Number</label>
+                            <input asp-for="Customer.Phone"
+                                   class="expense-control" />
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Customer.Email">Email Address</label>
+                            <input asp-for="Customer.Email"
+                                   type="email"
+                                   class="expense-control" />
+                        </div>
+
+                        <div class="expense-field expense-full-width">
+                            <label asp-for="Customer.Address">Address</label>
+                            <input asp-for="Customer.Address"
+                                   class="expense-control" />
+                        </div>
+
+                        <div class="expense-field expense-full-width">
+                            <label asp-for="Customer.Notes">Notes</label>
+                            <textarea asp-for="Customer.Notes"
+                                      class="expense-control"
+                                      rows="4"></textarea>
+                        </div>
+
+                        <div class="expense-field">
+                            <label asp-for="Customer.IsActive">Status</label>
+                            <select asp-for="Customer.IsActive"
+                                    class="expense-control">
+                                <option value="true">Active</option>
+                                <option value="false">Inactive</option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="expense-actions">
+                        <button type="submit" class="expense-save-button">
+                            Save Changes
+                        </button>
+
+                        <a asp-page="/Customers/Index"
+                           class="product-create__cancel">
+                            Cancel
+                        </a>
+                    </div>
+
+                </form>
+
+            </section>
+        </div>
+    </main>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

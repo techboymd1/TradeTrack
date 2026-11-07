@@ -24,12 +24,17 @@ public class CreateModel : PageModel
     public List<SaleLineInput> Lines { get; set; } = new();
 
     [BindProperty]
+    public ulong? CustomerId { get; set; }
+
+    [BindProperty]
     public decimal DiscountAmount { get; set; }
 
     [BindProperty]
     public string PaymentMethod { get; set; } = "Cash";
 
     public List<Product> AvailableProducts { get; private set; } = new();
+
+    public List<Customer> AvailableCustomers { get; private set; } = new();
 
     public CreateModel(
         TradeTrackDbContext context,
@@ -41,13 +46,11 @@ public class CreateModel : PageModel
 
     public async Task OnGetAsync()
     {
-        await LoadAvailableProductsAsync();
+        await LoadFormOptionsAsync();
     }
 
     public async Task<IActionResult> OnPostAsync()
     {
-        // Validate payment method.
-
         if (!AllowedPaymentMethods.Contains(
                 PaymentMethod,
                 StringComparer.Ordinal))
@@ -57,7 +60,21 @@ public class CreateModel : PageModel
                 "Select a valid payment method.");
         }
 
-        // Validate sale items.
+        if (CustomerId.HasValue)
+        {
+            var customerExists = await _context.Customers
+                .AsNoTracking()
+                .AnyAsync(customer =>
+                    customer.CustomerId == CustomerId.Value &&
+                    customer.IsActive);
+
+            if (!customerExists)
+            {
+                ModelState.AddModelError(
+                    nameof(CustomerId),
+                    "The selected customer is unavailable.");
+            }
+        }
 
         if (Lines == null || Lines.Count == 0)
         {
@@ -75,9 +92,10 @@ public class CreateModel : PageModel
             }
 
             if (Lines.Any(line =>
-                line.ProductId == 0 ||
-                line.Quantity <= 0 ||
-                line.Quantity > 999999999.999m))
+    line.ProductId == 0 ||
+    line.Quantity < 1 ||
+    line.Quantity != decimal.Truncate(line.Quantity) ||
+    line.Quantity > 999999999.999m))
             {
                 ModelState.AddModelError(
                     string.Empty,
@@ -94,13 +112,11 @@ public class CreateModel : PageModel
 
         if (!ModelState.IsValid)
         {
-            await LoadAvailableProductsAsync();
+            await LoadFormOptionsAsync();
             return Page();
         }
 
-        // Combine duplicate products into one sale item.
-
-        var groupedLines = Lines
+        var groupedLines = (Lines ?? new List<SaleLineInput>())
             .GroupBy(line => line.ProductId)
             .Select(group => new SaleLineInput
             {
@@ -116,8 +132,6 @@ public class CreateModel : PageModel
         {
             var saleItems = new List<SaleItem>();
             decimal subtotal = 0;
-
-            // Lock and validate every product before saving the sale.
 
             foreach (var line in groupedLines)
             {
@@ -137,7 +151,7 @@ public class CreateModel : PageModel
                         string.Empty,
                         "One of the selected products could not be found.");
 
-                    await LoadAvailableProductsAsync();
+                    await LoadFormOptionsAsync();
                     return Page();
                 }
 
@@ -147,7 +161,7 @@ public class CreateModel : PageModel
                         string.Empty,
                         $"{product.Name} is inactive and cannot be sold.");
 
-                    await LoadAvailableProductsAsync();
+                    await LoadFormOptionsAsync();
                     return Page();
                 }
 
@@ -157,13 +171,11 @@ public class CreateModel : PageModel
                         string.Empty,
                         $"Insufficient stock for {product.Name}. Available: {product.QuantityInStock:0.###}.");
 
-                    await LoadAvailableProductsAsync();
+                    await LoadFormOptionsAsync();
                     return Page();
                 }
 
-                // Calculate the line total using database prices.
-
-                decimal lineTotal = decimal.Round(
+                var lineTotal = decimal.Round(
                     product.SellingPrice * line.Quantity,
                     2,
                     MidpointRounding.AwayFromZero);
@@ -181,8 +193,6 @@ public class CreateModel : PageModel
                     LineTotal = lineTotal
                 });
 
-                // Reduce stock within the database transaction.
-
                 product.QuantityInStock -= line.Quantity;
             }
 
@@ -197,24 +207,23 @@ public class CreateModel : PageModel
                     nameof(DiscountAmount),
                     "Discount cannot exceed the sale subtotal.");
 
-                await LoadAvailableProductsAsync();
+                await LoadFormOptionsAsync();
                 return Page();
             }
 
-            decimal totalAmount = decimal.Round(
+            var totalAmount = decimal.Round(
                 subtotal - DiscountAmount,
                 2,
                 MidpointRounding.AwayFromZero);
 
             var now = DateTime.Now;
 
-            // Generate a unique invoice number.
-
-            string invoiceNumber =
+            var invoiceNumber =
                 $"TT-{now:yyyyMMdd-HHmmss}-{Guid.NewGuid().ToString("N")[..6].ToUpperInvariant()}";
 
             var sale = new Sale
             {
+                CustomerId = CustomerId,
                 InvoiceNumber = invoiceNumber,
                 SaleDate = now,
                 Subtotal = subtotal,
@@ -226,8 +235,6 @@ public class CreateModel : PageModel
             };
 
             _context.Sales.Add(sale);
-
-            // Save sale, sale items and stock changes together.
 
             await _context.SaveChangesAsync();
 
@@ -246,15 +253,14 @@ public class CreateModel : PageModel
 
             ModelState.AddModelError(
                 string.Empty,
-                "The sale could not be completed. No sale should be recorded. Please try again.");
+                "The sale could not be completed. Please try again.");
 
-            await LoadAvailableProductsAsync();
-
+            await LoadFormOptionsAsync();
             return Page();
         }
     }
 
-    private async Task LoadAvailableProductsAsync()
+    private async Task LoadFormOptionsAsync()
     {
         AvailableProducts = await _context.Products
             .AsNoTracking()
@@ -262,6 +268,12 @@ public class CreateModel : PageModel
                 product.IsActive &&
                 product.QuantityInStock > 0)
             .OrderBy(product => product.Name)
+            .ToListAsync();
+
+        AvailableCustomers = await _context.Customers
+            .AsNoTracking()
+            .Where(customer => customer.IsActive)
+            .OrderBy(customer => customer.FullName)
             .ToListAsync();
     }
 }

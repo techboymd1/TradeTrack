@@ -10,13 +10,21 @@
 
     var isSales =
         currentPath.StartsWith("/Sales", StringComparison.OrdinalIgnoreCase);
+
+    var isExpenses =
+        currentPath.StartsWith("/Expenses", StringComparison.OrdinalIgnoreCase);
+
+    var isCustomers =
+        currentPath.StartsWith("/Customers", StringComparison.OrdinalIgnoreCase);
+
+    var isReports =
+        currentPath.StartsWith("/Reports", StringComparison.OrdinalIgnoreCase);
 }
 
 <aside class="sidebar">
 
     <a class="brand" asp-page="/Index" aria-label="TradeTrack home">
         <span class="brand-mark">T</span>
-
         <span class="brand-copy">
             <span class="brand-name">TradeTrack</span>
             <span class="brand-caption">BUSINESS MANAGEMENT</span>
@@ -25,12 +33,10 @@
 
     <div class="workspace-card">
         <span class="workspace-avatar">MB</span>
-
         <span class="workspace-copy">
             <strong>My Business</strong>
             <small>Business Workspace</small>
         </span>
-
         <span class="workspace-menu" aria-hidden="true">···</span>
     </div>
 
@@ -61,22 +67,28 @@
             <span>Sales</span>
         </a>
 
-        <button type="button" class="side-link nav-unavailable" disabled>
+        <a class="side-link @(isCustomers ? "active" : "")"
+           asp-page="/Customers/Index"
+           aria-current="@(isCustomers ? "page" : null)">
             <span class="nav-icon" aria-hidden="true">♙</span>
             <span>Customers</span>
-        </button>
+        </a>
 
-        <button type="button" class="side-link nav-unavailable" disabled>
+        <a class="side-link @(isExpenses ? "active" : "")"
+           asp-page="/Expenses/Index"
+           aria-current="@(isExpenses ? "page" : null)">
             <span class="nav-icon" aria-hidden="true">₦</span>
             <span>Expenses</span>
-        </button>
+        </a>
 
         <p class="nav-section-title nav-section-spaced">INSIGHTS</p>
 
-        <button type="button" class="side-link nav-unavailable" disabled>
+        <a class="side-link @(isReports ? "active" : "")"
+           asp-page="/Reports/Index"
+           aria-current="@(isReports ? "page" : null)">
             <span class="nav-icon" aria-hidden="true">▥</span>
             <span>Reports</span>
-        </button>
+        </a>
 
     </nav>
 
