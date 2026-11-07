@@ -1,0 +1,90 @@
+@{
+    var currentPath = Context.Request.Path.Value ?? "/";
+
+    var isDashboard =
+        currentPath == "/" ||
+        currentPath.Equals("/Index", StringComparison.OrdinalIgnoreCase);
+
+    var isProducts =
+        currentPath.StartsWith("/Products", StringComparison.OrdinalIgnoreCase);
+
+    var isSales =
+        currentPath.StartsWith("/Sales", StringComparison.OrdinalIgnoreCase);
+}
+
+<aside class="sidebar">
+
+    <a class="brand" asp-page="/Index" aria-label="TradeTrack home">
+        <span class="brand-mark">T</span>
+
+        <span class="brand-copy">
+            <span class="brand-name">TradeTrack</span>
+            <span class="brand-caption">BUSINESS MANAGEMENT</span>
+        </span>
+    </a>
+
+    <div class="workspace-card">
+        <span class="workspace-avatar">MB</span>
+
+        <span class="workspace-copy">
+            <strong>My Business</strong>
+            <small>Business Workspace</small>
+        </span>
+
+        <span class="workspace-menu" aria-hidden="true">···</span>
+    </div>
+
+    <nav class="side-navigation" aria-label="Main navigation">
+
+        <p class="nav-section-title">WORKSPACE</p>
+
+        <a class="side-link @(isDashboard ? "active" : "")"
+           asp-page="/Index"
+           aria-current="@(isDashboard ? "page" : null)">
+            <span class="nav-icon" aria-hidden="true">▦</span>
+            <span>Overview</span>
+        </a>
+
+        <p class="nav-section-title nav-section-spaced">MANAGE</p>
+
+        <a class="side-link @(isProducts ? "active" : "")"
+           asp-page="/Products/Index"
+           aria-current="@(isProducts ? "page" : null)">
+            <span class="nav-icon" aria-hidden="true">▤</span>
+            <span>Products & Stock</span>
+        </a>
+
+        <a class="side-link @(isSales ? "active" : "")"
+           asp-page="/Sales/Index"
+           aria-current="@(isSales ? "page" : null)">
+            <span class="nav-icon" aria-hidden="true">↗</span>
+            <span>Sales</span>
+        </a>
+
+        <button type="button" class="side-link nav-unavailable" disabled>
+            <span class="nav-icon" aria-hidden="true">♙</span>
+            <span>Customers</span>
+        </button>
+
+        <button type="button" class="side-link nav-unavailable" disabled>
+            <span class="nav-icon" aria-hidden="true">₦</span>
+            <span>Expenses</span>
+        </button>
+
+        <p class="nav-section-title nav-section-spaced">INSIGHTS</p>
+
+        <button type="button" class="side-link nav-unavailable" disabled>
+            <span class="nav-icon" aria-hidden="true">▥</span>
+            <span>Reports</span>
+        </button>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+        <div class="sidebar-footer">
+            <span class="online-dot" aria-hidden="true"></span>
+            TradeTrack Business Suite
+        </div>
+    </div>
+
+</aside>

@@ -1,0 +1,262 @@
+@page
+@model TradeTrack.Pages.Products.EditModel
+
+@{
+    ViewData["Title"] = "Edit Product";
+    ViewData["TradeTrackDashboard"] = true;
+}
+
+<div class="app-shell">
+
+    <partial name="_Sidebar" />
+
+    <main class="main-panel">
+
+        <header class="topbar">
+
+            <div class="breadcrumb">
+                <a asp-page="/Products/Index">Products & Stock</a>
+                <span aria-hidden="true">/</span>
+                <strong>Edit Product</strong>
+            </div>
+
+            <div class="topbar-right">
+
+                <a class="dashboard-secondary-button"
+                   asp-page="/Products/Index">
+                    Back to Inventory
+                </a>
+
+                <span class="profile-avatar" aria-label="Business profile">
+                    MB
+                </span>
+
+            </div>
+
+        </header>
+
+        <div class="page-content">
+
+            <section class="product-create">
+
+                <header class="product-create__header">
+
+                    <div>
+                        <p class="product-create__eyebrow">INVENTORY</p>
+
+                        <h1>Edit Product</h1>
+
+                        <p class="product-create__description">
+                            Update product information, pricing and stock levels.
+                        </p>
+                    </div>
+
+                </header>
+
+                <form method="post"
+                      asp-route-id="@Model.Product.ProductId"
+                      class="product-create__form">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="product-create__validation-summary">
+                    </div>
+
+                    <section class="product-create__section">
+
+                        <div class="product-create__section-heading">
+                            <h2>Product Details</h2>
+                        </div>
+
+                        <div class="product-create__grid">
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.Name">Product Name</label>
+
+                                <input asp-for="Product.Name"
+                                       class="product-create__control"
+                                       placeholder="Enter product name" />
+
+                                <span asp-validation-for="Product.Name"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.Sku">SKU</label>
+
+                                <input asp-for="Product.Sku"
+                                       class="product-create__control"
+                                       placeholder="Enter product SKU" />
+
+                                <span asp-validation-for="Product.Sku"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.Category">Category</label>
+
+                                <input asp-for="Product.Category"
+                                       class="product-create__control"
+                                       placeholder="Enter category" />
+
+                                <span asp-validation-for="Product.Category"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.Unit">Unit</label>
+
+                                <select asp-for="Product.Unit"
+                                        class="product-create__control">
+
+                                    <option value="unit">Unit</option>
+                                    <option value="piece">Piece</option>
+                                    <option value="kg">Kilogram (kg)</option>
+                                    <option value="g">Gram (g)</option>
+                                    <option value="litre">Litre</option>
+                                    <option value="pack">Pack</option>
+                                    <option value="carton">Carton</option>
+                                    <option value="bag">Bag</option>
+
+                                </select>
+
+                                <span asp-validation-for="Product.Unit"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <section class="product-create__section">
+
+                        <div class="product-create__section-heading">
+                            <h2>Pricing</h2>
+                        </div>
+
+                        <div class="product-create__grid">
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.CostPrice">
+                                    Cost Price (₦)
+                                </label>
+
+                                <input asp-for="Product.CostPrice"
+                                       type="number"
+                                       min="0"
+                                       step="0.01"
+                                       class="product-create__control" />
+
+                                <span asp-validation-for="Product.CostPrice"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.SellingPrice">
+                                    Selling Price (₦)
+                                </label>
+
+                                <input asp-for="Product.SellingPrice"
+                                       type="number"
+                                       min="0"
+                                       step="0.01"
+                                       class="product-create__control" />
+
+                                <span asp-validation-for="Product.SellingPrice"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <section class="product-create__section">
+
+                        <div class="product-create__section-heading">
+                            <h2>Stock Levels</h2>
+                        </div>
+
+                        <div class="product-create__grid">
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.QuantityInStock">
+                                    Available Stock
+                                </label>
+
+                                <input asp-for="Product.QuantityInStock"
+                                       type="number"
+                                       min="0"
+                                       step="0.001"
+                                       class="product-create__control" />
+
+                                <span asp-validation-for="Product.QuantityInStock"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.LowStockThreshold">
+                                    Low Stock Threshold
+                                </label>
+
+                                <input asp-for="Product.LowStockThreshold"
+                                       type="number"
+                                       min="0"
+                                       step="0.001"
+                                       class="product-create__control" />
+
+                                <span asp-validation-for="Product.LowStockThreshold"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                            <div class="product-create__field">
+                                <label asp-for="Product.IsActive">
+                                    Product Status
+                                </label>
+
+                                <select asp-for="Product.IsActive"
+                                        class="product-create__control">
+
+                                    <option value="true">Active</option>
+                                    <option value="false">Inactive</option>
+
+                                </select>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <div class="product-create__actions">
+
+                        <button type="submit"
+                                class="product-create__button">
+                            Save Changes
+                        </button>
+
+                        <a class="product-create__cancel"
+                           asp-page="/Products/Index">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,5 +1,4 @@
-﻿
-@page
+﻿@page
 @model TradeTrack.Pages.IndexModel
 
 @{
@@ -8,80 +7,13 @@
 }
 
 <div class="app-shell">
-    <aside class="sidebar">
-        <a class="brand" asp-page="/Index" aria-label="TradeTrack home">
-            <span class="brand-mark">T</span>
-            <span class="brand-copy">
-                <span class="brand-name">TradeTrack</span>
-                <span class="brand-caption">SMALL BUSINESS TOOLS</span>
-            </span>
-        </a>
 
-        <div class="workspace-card">
-            <span class="workspace-avatar">MB</span>
-            <span class="workspace-copy">
-                <strong>My business</strong>
-                <small>Workspace setup</small>
-            </span>
-            <span class="workspace-menu" aria-hidden="true">···</span>
-        </div>
-
-        <nav class="side-navigation" aria-label="Main navigation">
-            <p class="nav-section-title">WORKSPACE</p>
-
-            <a class="side-link active" asp-page="/Index" aria-current="page">
-                <span class="nav-icon" aria-hidden="true">▦</span>
-                <span>Overview</span>
-            </a>
-
-            <p class="nav-section-title nav-section-spaced">MANAGE</p>
-
-            <span class="side-link nav-unavailable" aria-disabled="true">
-                <span class="nav-icon" aria-hidden="true">▤</span>
-                <span>Products & stock</span>
-                <span class="nav-soon">NEXT</span>
-            </span>
-
-            <span class="side-link nav-unavailable" aria-disabled="true">
-                <span class="nav-icon" aria-hidden="true">↗</span>
-                <span>Sales</span>
-            </span>
-
-            <span class="side-link nav-unavailable" aria-disabled="true">
-                <span class="nav-icon" aria-hidden="true">♙</span>
-                <span>Customers</span>
-            </span>
-
-            <span class="side-link nav-unavailable" aria-disabled="true">
-                <span class="nav-icon" aria-hidden="true">₦</span>
-                <span>Expenses</span>
-            </span>
-
-            <p class="nav-section-title nav-section-spaced">INSIGHTS</p>
-
-            <span class="side-link nav-unavailable" aria-disabled="true">
-                <span class="nav-icon" aria-hidden="true">▥</span>
-                <span>Reports</span>
-            </span>
-        </nav>
-
-        <div class="sidebar-bottom">
-            <div class="setup-note">
-                <span class="setup-note-icon" aria-hidden="true">✳</span>
-                <strong>Getting started</strong>
-                <p>Your workspace is ready. Start with products and stock to build your business records.</p>
-                <a href="#build-plan">View build plan <span aria-hidden="true">↗</span></a>
-            </div>
-
-            <div class="sidebar-footer">
-                <span class="online-dot" aria-hidden="true"></span>
-                Development version
-            </div>
-        </div>
-    </aside>
+    <partial name="_Sidebar" />
 
     <main class="main-panel">
+
         <header class="topbar">
+
             <div class="breadcrumb">
                 <span>Workspace</span>
                 <span aria-hidden="true">/</span>
@@ -89,194 +21,274 @@
             </div>
 
             <div class="topbar-right">
-                <span class="environment-label">
-                    <span class="environment-dot" aria-hidden="true"></span>
-                    LOCAL PREVIEW
+
+                <a class="dashboard-primary-button"
+                   asp-page="/Products/Create">
+                    <span aria-hidden="true">+</span>
+                    Add Product
+                </a>
+
+                <span class="profile-avatar" aria-label="Business profile">
+                    MB
                 </span>
-                <span class="profile-avatar" aria-label="Muhammad Ishaq">MI</span>
+
             </div>
+
         </header>
 
+
         <div class="page-content">
+
             <section class="welcome-row">
+
                 <div>
-                    <p class="eyebrow">YOUR BUSINESS AT A GLANCE</p>
+                    <p class="eyebrow">BUSINESS MANAGEMENT</p>
+
                     <h1>Overview</h1>
+
                     <p class="page-description">
-                        Keep track of the numbers that matter to your business.
+                        Monitor business performance and manage daily operations.
                     </p>
                 </div>
 
-                <span class="setup-status">
-                    <span aria-hidden="true">●</span>
-                    Initial setup
-                </span>
             </section>
 
-            <section class="getting-started-banner" aria-labelledby="banner-title">
+
+            <section class="dashboard-banner">
+
                 <div class="banner-symbol" aria-hidden="true">↗</div>
 
                 <div class="banner-copy">
-                    <p class="banner-kicker">WELCOME TO TRADETRACK</p>
-                    <h2 id="banner-title">Build a clearer picture of your business.</h2>
+
+                    <p class="banner-kicker">TRADETRACK</p>
+
+                    <h2>Your business, organised.</h2>
+
                     <p>
-                        Your dashboard is ready. Add products first, then record sales
-                        and expenses to start seeing useful business figures here.
+                        Manage inventory, monitor sales and expenses,
+                        and keep your business records organised.
                     </p>
+
                 </div>
 
-                <a class="banner-link" href="#build-plan">
-                    See what's next <span aria-hidden="true">→</span>
+                <a class="banner-link" asp-page="/Products/Create">
+                    Add Product
+                    <span aria-hidden="true">→</span>
                 </a>
+
             </section>
 
-            <section class="metrics-section" aria-labelledby="metrics-heading">
+
+            <section class="metrics-section">
+
                 <div class="section-heading">
                     <div>
-                        <h2 id="metrics-heading">Business summary</h2>
-                        <p>Figures will reflect your records as features are added.</p>
+                        <h2>Business Summary</h2>
+                        <p>A summary of your business activity.</p>
                     </div>
-                    <span class="data-label">NO RECORDS YET</span>
                 </div>
 
                 <div class="metrics-grid">
+
                     <article class="metric-card">
                         <div class="metric-topline">
-                            <span class="metric-label">Sales today</span>
+                            <span class="metric-label">Sales Today</span>
                             <span class="metric-icon sales-icon" aria-hidden="true">↗</span>
                         </div>
-                        <p class="metric-value">₦0</p>
-                        <p class="metric-footnote">
-                            <span class="neutral-marker"></span>
-                            No sales recorded yet
-                        </p>
+
+                        <p class="metric-value">—</p>
+                        <p class="metric-footnote">Today's revenue</p>
                     </article>
+
 
                     <article class="metric-card">
                         <div class="metric-topline">
-                            <span class="metric-label">Products in stock</span>
+                            <span class="metric-label">Products in Stock</span>
                             <span class="metric-icon product-icon" aria-hidden="true">▤</span>
                         </div>
-                        <p class="metric-value">0 <span class="metric-unit">items</span></p>
-                        <p class="metric-footnote">
-                            <span class="neutral-marker"></span>
-                            Products not added yet
+
+                        <p class="metric-value">
+                            @Model.ProductsInStockDisplay
                         </p>
+
+                        <p class="metric-footnote">Active products with available stock</p>
                     </article>
+
 
                     <article class="metric-card">
                         <div class="metric-topline">
-                            <span class="metric-label">Expenses this month</span>
+                            <span class="metric-label">Monthly Expenses</span>
                             <span class="metric-icon expense-icon" aria-hidden="true">↘</span>
                         </div>
-                        <p class="metric-value">₦0</p>
-                        <p class="metric-footnote">
-                            <span class="neutral-marker"></span>
-                            No expenses recorded yet
-                        </p>
+
+                        <p class="metric-value">—</p>
+                        <p class="metric-footnote">Monthly spending</p>
                     </article>
+
 
                     <article class="metric-card">
                         <div class="metric-topline">
-                            <span class="metric-label">Estimated profit</span>
+                            <span class="metric-label">Net Profit</span>
                             <span class="metric-icon profit-icon" aria-hidden="true">◎</span>
                         </div>
+
                         <p class="metric-value">—</p>
-                        <p class="metric-footnote">
-                            Calculated when sales and costs are recorded
-                        </p>
+                        <p class="metric-footnote">Business earnings</p>
                     </article>
+
                 </div>
+
             </section>
 
+
             <div class="dashboard-lower-grid">
-                <section class="panel activity-panel" aria-labelledby="activity-heading">
+
+                <section class="panel">
+
                     <div class="panel-heading">
                         <div>
-                            <h2 id="activity-heading">Recent activity</h2>
-                            <p>Your latest business transactions</p>
+                            <h2>Recent Activity</h2>
+                            <p>Latest business transactions</p>
                         </div>
-                        <span class="panel-count">0 records</span>
+
+                        <span class="panel-count">0 Records</span>
                     </div>
 
                     <div class="empty-state">
-                        <div class="empty-state-icon" aria-hidden="true">↔</div>
-                        <h3>No activity to show</h3>
+
+                        <div class="empty-state-icon" aria-hidden="true">
+                            ↔
+                        </div>
+
+                        <h3>No Recent Activity</h3>
+
                         <p>
-                            Sales and expense records will appear here once those
-                            features are implemented and you begin adding entries.
+                            Your latest business transactions will appear here.
                         </p>
+
                     </div>
+
                 </section>
 
-                <section class="panel stock-panel" aria-labelledby="stock-heading">
+
+                <section class="panel">
+
                     <div class="panel-heading">
                         <div>
-                            <h2 id="stock-heading">Stock health</h2>
-                            <p>Products that may need attention</p>
+                            <h2>Stock Health</h2>
+                            <p>Current inventory condition</p>
                         </div>
-                        <span class="stock-indicator">Not set up</span>
+
+                        <span class="stock-indicator">
+                            @Model.InventoryStatus
+                        </span>
                     </div>
 
                     <div class="stock-empty">
+
                         <span class="stock-empty-icon" aria-hidden="true">▤</span>
-                        <h3>Inventory starts here</h3>
+
+                        <h3>Inventory Overview</h3>
+
                         <p>
-                            Once products and stock quantities are recorded, this
-                            area can identify items running low.
+                            @Model.LowStockProductsDisplay low-stock products
+                            require attention.
                         </p>
+
+                        <a class="dashboard-primary-button"
+                           asp-page="/Products/Index">
+                            View Inventory
+                        </a>
+
                     </div>
 
                     <div class="stock-panel-footer">
-                        <span>Low-stock alerts</span>
-                        <span class="feature-status">Planned feature</span>
+                        <span>Inventory Management</span>
+                        <a asp-page="/Products/Index">View Products →</a>
                     </div>
+
                 </section>
+
             </div>
 
-            <section class="build-plan" id="build-plan" aria-labelledby="build-plan-heading">
+
+            <section class="business-modules">
+
                 <div class="section-heading">
                     <div>
-                        <p class="eyebrow">PROJECT ROADMAP</p>
-                        <h2 id="build-plan-heading">What we're building next</h2>
-                        <p>Each module will be implemented and tested before moving on.</p>
+                        <h2>Business Management</h2>
+                        <p>Manage your business operations.</p>
                     </div>
                 </div>
 
-                <div class="roadmap-grid">
-                    <article class="roadmap-card roadmap-current">
-                        <span class="roadmap-number">01</span>
-                        <div>
-                            <h3>Products & stock</h3>
-                            <p>Manage products, prices, quantities and restocking.</p>
+                <div class="module-grid">
+
+                    <article class="module-card">
+
+                        <div class="module-icon inventory-module-icon"
+                             aria-hidden="true">▤</div>
+
+                        <div class="module-content">
+                            <h3>Products & Stock</h3>
+
+                            <p>
+                                Manage product information, pricing,
+                                quantities and inventory.
+                            </p>
                         </div>
-                        <span class="roadmap-badge">UP NEXT</span>
+
+                        <a class="module-link" asp-page="/Products/Index">
+                            View Inventory →
+                        </a>
+
                     </article>
 
-                    <article class="roadmap-card">
-                        <span class="roadmap-number">02</span>
-                        <div>
-                            <h3>Customers & sales</h3>
-                            <p>Record sales, customer details and payments.</p>
+
+                    <article class="module-card">
+
+                        <div class="module-icon sales-module-icon"
+                             aria-hidden="true">↗</div>
+
+                        <div class="module-content">
+                            <h3>Customers & Sales</h3>
+
+                            <p>
+                                Manage customer information,
+                                sales transactions and payments.
+                            </p>
                         </div>
-                        <span class="roadmap-badge">PLANNED</span>
+
                     </article>
 
-                    <article class="roadmap-card">
-                        <span class="roadmap-number">03</span>
-                        <div>
-                            <h3>Expenses & reports</h3>
-                            <p>Track spending, profit and business summaries.</p>
+
+                    <article class="module-card">
+
+                        <div class="module-icon expenses-module-icon"
+                             aria-hidden="true">₦</div>
+
+                        <div class="module-content">
+                            <h3>Expenses & Reports</h3>
+
+                            <p>
+                                Track business expenses, revenue
+                                and financial performance.
+                            </p>
                         </div>
-                        <span class="roadmap-badge">PLANNED</span>
+
                     </article>
+
                 </div>
+
             </section>
 
+
             <footer class="dashboard-footer">
-                <span>TradeTrack <span aria-hidden="true">·</span> Built for practical small-business management</span>
-                <span>Development preview</span>
+                <span>TradeTrack · Business Management System</span>
+                <span>All rights reserved.</span>
             </footer>
+
         </div>
+
     </main>
+
 </div>

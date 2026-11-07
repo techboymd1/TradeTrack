@@ -1,0 +1,279 @@
+@page
+@model TradeTrack.Pages.Sales.CreateModel
+
+@{
+    ViewData["Title"] = "New Sale";
+    ViewData["TradeTrackDashboard"] = true;
+    var rowCount = Math.Max(Model.Lines.Count, 1);
+}
+
+<div class="app-shell">
+
+    <partial name="_Sidebar" />
+
+    <main class="main-panel">
+
+        <header class="topbar">
+            <div class="breadcrumb">
+                <a asp-page="/Sales/Index">Sales</a>
+                <span>/</span>
+                <strong>New Sale</strong>
+            </div>
+
+            <div class="topbar-right">
+                <a class="dashboard-secondary-button"
+                   asp-page="/Sales/Index">
+                    Sales History
+                </a>
+                <span class="profile-avatar">MB</span>
+            </div>
+        </header>
+
+        <div class="page-content">
+
+            <section class="sales-create">
+
+                <div class="sales-page-heading">
+                    <div>
+                        <p class="eyebrow">SALES MANAGEMENT</p>
+                        <h1>New Sale</h1>
+                        <p class="page-description">
+                            Record a transaction and update inventory.
+                        </p>
+                    </div>
+                </div>
+
+                <form method="post"
+                      id="saleForm"
+                      class="sales-form"
+                      data-next-index="@rowCount">
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="sales-validation">
+                    </div>
+
+                    @if (Model.AvailableProducts.Count == 0)
+                    {
+                        <div class="inventory-notice inventory-error">
+                            No active products with available stock. Add stock before recording a sale.
+                            <a asp-page="/Products/Index">View Inventory</a>
+                        </div>
+                    }
+
+                    <section class="sales-form-section">
+
+                        <div class="sales-section-heading">
+                            <h2>Products Sold</h2>
+                            <span>@Model.AvailableProducts.Count Available Products</span>
+                        </div>
+
+                        <div id="saleLines">
+
+                            @for (var i = 0; i < rowCount; i++)
+                            {
+                                var productId = i < Model.Lines.Count
+                                    ? Model.Lines[i].ProductId : 0UL;
+
+                                var quantity = i < Model.Lines.Count
+                                    ? Model.Lines[i].Quantity : 1m;
+
+                                <div class="sale-line" data-sale-line>
+
+                                    <div class="sales-field">
+                                        <label for="saleProduct@(i)">Product</label>
+
+                                        <select id="saleProduct@(i)"
+                                                name="Lines[@i].ProductId"
+                                                class="sales-control"
+                                                data-product-select>
+                                            <option value="0">Select a product</option>
+
+                                            @foreach (var product in Model.AvailableProducts)
+                                            {
+                                                <option value="@product.ProductId"
+                                                        selected="@(product.ProductId == productId)"
+                                                        data-price="@product.SellingPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                                        data-stock="@product.QuantityInStock.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                                                    @product.Name (@product.Sku) — @product.QuantityInStock available
+                                                </option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="sales-field">
+                                        <label for="saleQuantity@(i)">Quantity</label>
+
+                                        <input id="saleQuantity@(i)"
+                                               name="Lines[@i].Quantity"
+                                               type="number"
+                                               min="0.001"
+                                               step="0.001"
+                                               value="@quantity.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                               class="sales-control"
+                                               data-quantity />
+                                    </div>
+
+                                    <div class="sales-line-total">
+                                        <span>Line Total</span>
+                                        <strong data-line-total>₦0.00</strong>
+                                    </div>
+
+                                    <button type="button"
+                                            class="sales-remove-button"
+                                            data-remove-line
+                                            aria-label="Remove product">
+                                        ×
+                                    </button>
+
+                                </div>
+                            }
+
+                        </div>
+
+                        <template id="saleLineTemplate">
+                            <div class="sale-line" data-sale-line>
+
+                                <div class="sales-field">
+                                    <label>Product</label>
+
+                                    <select name="Lines[__index__].ProductId"
+                                            class="sales-control"
+                                            data-product-select>
+                                        <option value="0">Select a product</option>
+
+                                        @foreach (var product in Model.AvailableProducts)
+                                        {
+                                            <option value="@product.ProductId"
+                                                    data-price="@product.SellingPrice.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+                                                    data-stock="@product.QuantityInStock.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                                                @product.Name (@product.Sku) — @product.QuantityInStock available
+                                            </option>
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="sales-field">
+                                    <label>Quantity</label>
+
+                                    <input name="Lines[__index__].Quantity"
+                                           type="number"
+                                           min="0.001"
+                                           step="0.001"
+                                           value="1"
+                                           class="sales-control"
+                                           data-quantity />
+                                </div>
+
+                                <div class="sales-line-total">
+                                    <span>Line Total</span>
+                                    <strong data-line-total>₦0.00</strong>
+                                </div>
+
+                                <button type="button"
+                                        class="sales-remove-button"
+                                        data-remove-line
+                                        aria-label="Remove product">
+                                    ×
+                                </button>
+
+                            </div>
+                        </template>
+
+                        <button type="button"
+                                id="addSaleLine"
+                                class="sales-add-line"
+                                @(Model.AvailableProducts.Count == 0 ? "disabled" : "")>
+                            + Add Another Product
+                        </button>
+
+                    </section>
+
+                    <section class="sales-form-section">
+
+                        <div class="sales-section-heading">
+                            <h2>Payment Details</h2>
+                        </div>
+
+                        <div class="sales-payment-grid">
+
+                            <div class="sales-field">
+                                <label asp-for="PaymentMethod">Payment Method</label>
+
+                                <select asp-for="PaymentMethod"
+                                        class="sales-control">
+                                    <option value="Cash">Cash</option>
+                                    <option value="Bank Transfer">Bank Transfer</option>
+                                    <option value="POS">POS</option>
+                                    <option value="Card">Card</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="sales-field">
+                                <label asp-for="DiscountAmount">
+                                    Discount (₦)
+                                </label>
+
+                                <input asp-for="DiscountAmount"
+                                       type="number"
+                                       min="0"
+                                       step="0.01"
+                                       class="sales-control"
+                                       data-discount />
+                                <span asp-validation-for="DiscountAmount"
+                                      class="product-create__error">
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                    <section class="sales-total-card">
+
+                        <div class="sales-total-row">
+                            <span>Subtotal</span>
+                            <strong id="saleSubtotal">₦0.00</strong>
+                        </div>
+
+                        <div class="sales-total-row">
+                            <span>Discount</span>
+                            <strong id="saleDiscount">₦0.00</strong>
+                        </div>
+
+                        <div class="sales-grand-total">
+                            <span>Total Amount</span>
+                            <strong id="saleGrandTotal">₦0.00</strong>
+                        </div>
+
+                    </section>
+
+                    <div class="product-create__actions">
+
+                        <button type="submit"
+                                class="product-create__button"
+                                @(Model.AvailableProducts.Count == 0 ? "disabled" : "")>
+                            Complete Sale
+                        </button>
+
+                        <a asp-page="/Sales/Index"
+                           class="product-create__cancel">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </section>
+
+        </div>
+
+    </main>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/sales.js" asp-append-version="true"></script>
+}
